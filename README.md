@@ -10,6 +10,8 @@ for clinical use.**
 
 ## Judge in 60 seconds
 
+In this project, “clinical data” refers to de-identified ICU time-series measurements from the PhysioNet 2019 Sepsis Challenge dataset, including vital signs, laboratory measurements, and other patient variables recorded over time.
+
 | | |
 |---|---|
 | **Problem** | Sepsis early-warning models fail silently when their inputs are wrong: a °F thermometer in a °C field, a lab in the wrong units, a frozen monitor feed or an edited chart all produce a normal-looking prediction. |
