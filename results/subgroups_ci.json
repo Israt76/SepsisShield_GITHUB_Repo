@@ -1,0 +1,211 @@
+[
+ {
+  "attribute": "hospital",
+  "group": "A",
+  "n_patients": 4068,
+  "n_septic": 358,
+  "auroc": 0.8298036905036775,
+  "auroc_ci": [
+   0.8113611365189362,
+   0.8478170044495964
+  ],
+  "patient_sensitivity": 0.8044692737430168,
+  "sens_ci": [
+   0.7653631284916201,
+   0.8450418994413408
+  ],
+  "patient_specificity": 0.678167115902965,
+  "mean_pred": 0.020964330784791294,
+  "observed_rate": 0.02163821313513102
+ },
+ {
+  "attribute": "hospital",
+  "group": "B",
+  "n_patients": 4000,
+  "n_septic": 228,
+  "auroc": 0.8737292908384146,
+  "auroc_ci": [
+   0.856014311792371,
+   0.8925866169826209
+  ],
+  "patient_sensitivity": 0.7763157894736842,
+  "sens_ci": [
+   0.7280701754385965,
+   0.8289473684210527
+  ],
+  "patient_specificity": 0.7963944856839873,
+  "mean_pred": 0.01319279872619006,
+  "observed_rate": 0.014130592534930667
+ },
+ {
+  "attribute": "age_group",
+  "group": "45-64",
+  "n_patients": 2997,
+  "n_septic": 197,
+  "auroc": 0.8456455667399815,
+  "auroc_ci": [
+   0.8204559105024333,
+   0.8690584137879811
+  ],
+  "patient_sensitivity": 0.7461928934010152,
+  "sens_ci": [
+   0.6775380710659898,
+   0.8097715736040608
+  ],
+  "patient_specificity": 0.7485714285714286,
+  "mean_pred": 0.015123491377020829,
+  "observed_rate": 0.016566077373640263
+ },
+ {
+  "attribute": "age_group",
+  "group": "65-79",
+  "n_patients": 2745,
+  "n_septic": 218,
+  "auroc": 0.8613720322615441,
+  "auroc_ci": [
+   0.8399810995815675,
+   0.8801421343597178
+  ],
+  "patient_sensitivity": 0.8440366972477065,
+  "sens_ci": [
+   0.7935779816513762,
+   0.8923165137614678
+  ],
+  "patient_specificity": 0.738425009893154,
+  "mean_pred": 0.019578585513706077,
+  "observed_rate": 0.01882592380588946
+ },
+ {
+  "attribute": "age_group",
+  "group": "80+",
+  "n_patients": 1038,
+  "n_septic": 82,
+  "auroc": 0.8331133948652516,
+  "auroc_ci": [
+   0.7949433729485759,
+   0.8673387502439017
+  ],
+  "patient_sensitivity": 0.7317073170731707,
+  "sens_ci": [
+   0.6341463414634146,
+   0.8292682926829268
+  ],
+  "patient_specificity": 0.7081589958158996,
+  "mean_pred": 0.014942991786063266,
+  "observed_rate": 0.018861394704966256
+ },
+ {
+  "attribute": "age_group",
+  "group": "<45",
+  "n_patients": 1288,
+  "n_septic": 89,
+  "auroc": 0.858490110635633,
+  "auroc_ci": [
+   0.8309851345883932,
+   0.8838155974584496
+  ],
+  "patient_sensitivity": 0.8314606741573034,
+  "sens_ci": [
+   0.7528089887640449,
+   0.916011235955056
+  ],
+  "patient_specificity": 0.7347789824854045,
+  "mean_pred": 0.01825397048386163,
+  "observed_rate": 0.01848420871213753
+ },
+ {
+  "attribute": "sex",
+  "group": "Female",
+  "n_patients": 3517,
+  "n_septic": 228,
+  "auroc": 0.857123856655198,
+  "auroc_ci": [
+   0.8350620190534892,
+   0.8789974606403863
+  ],
+  "patient_sensitivity": 0.7850877192982456,
+  "sens_ci": [
+   0.7368421052631579,
+   0.8356359649122806
+  ],
+  "patient_specificity": 0.7512921860747948,
+  "mean_pred": 0.015999661763587178,
+  "observed_rate": 0.01607495215346498
+ },
+ {
+  "attribute": "sex",
+  "group": "Male",
+  "n_patients": 4551,
+  "n_septic": 358,
+  "auroc": 0.8483211569012604,
+  "auroc_ci": [
+   0.8309204825944019,
+   0.8646212041295015
+  ],
+  "patient_sensitivity": 0.7988826815642458,
+  "sens_ci": [
+   0.7611033519553072,
+   0.8379888268156425
+  ],
+  "patient_specificity": 0.7271643214881947,
+  "mean_pred": 0.01804803695590577,
+  "observed_rate": 0.019413747248716067
+ },
+ {
+  "attribute": "icu",
+  "group": "MICU",
+  "n_patients": 2406,
+  "n_septic": 195,
+  "auroc": 0.8478727121174936,
+  "auroc_ci": [
+   0.8281870935837662,
+   0.868088062612655
+  ],
+  "patient_sensitivity": 0.8153846153846154,
+  "sens_ci": [
+   0.7589743589743589,
+   0.8615384615384616
+  ],
+  "patient_specificity": 0.6639529624604251,
+  "mean_pred": 0.018367942695062676,
+  "observed_rate": 0.020316793099296137
+ },
+ {
+  "attribute": "icu",
+  "group": "SICU",
+  "n_patients": 2510,
+  "n_septic": 126,
+  "auroc": 0.8614184910135442,
+  "auroc_ci": [
+   0.8323434904915893,
+   0.8918395361810288
+  ],
+  "patient_sensitivity": 0.7301587301587301,
+  "sens_ci": [
+   0.6466269841269842,
+   0.7936507936507936
+  ],
+  "patient_specificity": 0.8309563758389262,
+  "mean_pred": 0.012551490746543445,
+  "observed_rate": 0.012425530142065575
+ },
+ {
+  "attribute": "icu",
+  "group": "Unknown",
+  "n_patients": 3152,
+  "n_septic": 265,
+  "auroc": 0.8404684583930965,
+  "auroc_ci": [
+   0.8203191319350384,
+   0.8591833847661551
+  ],
+  "patient_sensitivity": 0.8075471698113208,
+  "sens_ci": [
+   0.7620754716981133,
+   0.8528301886792453
+  ],
+  "patient_specificity": 0.717353654312435,
+  "mean_pred": 0.019872217912293072,
+  "observed_rate": 0.020548787990648455
+ }
+]

@@ -1,0 +1,82 @@
+11:03:27 temp_fahrenheit {'n': 4329, 'withheld': 1609, 'flagged': 2708, 'silent': 12, 'covered_attributable': 4094}
+11:03:45 lab_unit_error {'n': 697, 'withheld': 200, 'flagged': 471, 'silent': 26, 'covered_attributable': 628}
+11:04:03 sensor_artifact {'n': 1255, 'withheld': 951, 'flagged': 304, 'silent': 0, 'covered_attributable': 1161}
+11:04:22 frozen_feed {'n': 509, 'withheld': 6, 'flagged': 232, 'silent': 271, 'covered_attributable': 187}
+11:04:40 masking_attack {'n': 786, 'withheld': 66, 'flagged': 268, 'silent': 452, 'covered_attributable': 271}
+11:04:59 measurement_noise {'n': 87, 'withheld': 2, 'flagged': 9, 'silent': 76, 'covered_attributable': 3}
+{
+ "clean_cost": {
+  "hours": 124773,
+  "withheld_pct": 0.004792703549646157,
+  "flagged_pct": 0.05148549766375738,
+  "true_alert_hours": 4846,
+  "true_alerts_withheld": 38,
+  "true_alerts_flagged": 591,
+  "septic_detected": 465,
+  "septic_detected_with_shown_alert": 464
+ },
+ "dfc_accidental": {
+  "suppressed": {
+   "n": 473,
+   "withheld": 41,
+   "flagged": 230,
+   "silent": 202,
+   "covered_attributable": 226,
+   "attributable_coverage": 0.47780126849894294,
+   "coverage": 0.572938689217759,
+   "withheld_share": 0.08668076109936575
+  },
+  "spurious": {
+   "n": 6317,
+   "withheld": 2725,
+   "flagged": 3485,
+   "silent": 107,
+   "covered_attributable": 5844,
+   "attributable_coverage": 0.925122684818743,
+   "coverage": 0.9830615798638594,
+   "withheld_share": 0.4313756529998417
+  },
+  "all": {
+   "n": 6790,
+   "withheld": 2766,
+   "flagged": 3715,
+   "silent": 309,
+   "covered_attributable": 6070,
+   "attributable_coverage": 0.8939617083946981,
+   "coverage": 0.9544918998527246,
+   "withheld_share": 0.4073637702503682
+  }
+ },
+ "dfc_masking": {
+  "suppressed": {
+   "n": 698,
+   "withheld": 39,
+   "flagged": 227,
+   "silent": 432,
+   "covered_attributable": 218,
+   "attributable_coverage": 0.3123209169054441,
+   "coverage": 0.38108882521489973,
+   "withheld_share": 0.055873925501432664
+  },
+  "spurious": {
+   "n": 88,
+   "withheld": 27,
+   "flagged": 41,
+   "silent": 20,
+   "covered_attributable": 53,
+   "attributable_coverage": 0.6022727272727273,
+   "coverage": 0.7727272727272727,
+   "withheld_share": 0.3068181818181818
+  },
+  "all": {
+   "n": 786,
+   "withheld": 66,
+   "flagged": 268,
+   "silent": 452,
+   "covered_attributable": 271,
+   "attributable_coverage": 0.34478371501272265,
+   "coverage": 0.42493638676844786,
+   "withheld_share": 0.08396946564885496
+  }
+ }
+}

@@ -1,0 +1,23 @@
+23:02:09 {"corruption": "temp_fahrenheit", "auroc_clean": 0.811, "auroc_corrupt": 0.86, "utility_clean": 0.506, "utility_corrupt": 0.645, "hour_detect_rate": 0.807, "hour_low_rate": 0.339, "patient_detect_rate": 0.979, "clean_same_window_flag_rate": 0.175, "clean_same_window_low_rate": 0.037, "septic_detected_clean": 465, "septic_detected_corrupt": 536, "alerts_suppressed": 4, "suppressed_but_warned": 4, "suppressed_warned_pct": 1.0, "false_alarms_created": 518, "created_fa_warned_pct": 1.0}
+23:02:28 {"corruption": "lab_unit_error", "auroc_clean": 0.811, "auroc_corrupt": 0.825, "utility_clean": 0.506, "utility_corrupt": 0.549, "hour_detect_rate": 0.556, "hour_low_rate": 0.18, "patient_detect_rate": 0.798, "clean_same_window_flag_rate": 0.175, "clean_same_window_low_rate": 0.042, "septic_detected_clean": 465, "septic_detected_corrupt": 493, "alerts_suppressed": 0, "suppressed_but_warned": 0, "suppressed_warned_pct": NaN, "false_alarms_created": 100, "created_fa_warned_pct": 1.0}
+23:02:48 {"corruption": "sensor_artifact", "auroc_clean": 0.811, "auroc_corrupt": 0.834, "utility_clean": 0.506, "utility_corrupt": 0.565, "hour_detect_rate": 0.904, "hour_low_rate": 0.587, "patient_detect_rate": 1.0, "clean_same_window_flag_rate": 0.167, "clean_same_window_low_rate": 0.036, "septic_detected_clean": 465, "septic_detected_corrupt": 515, "alerts_suppressed": 3, "suppressed_but_warned": 3, "suppressed_warned_pct": 1.0, "false_alarms_created": 146, "created_fa_warned_pct": 1.0}
+23:03:07 {"corruption": "frozen_feed", "auroc_clean": 0.811, "auroc_corrupt": 0.79, "utility_clean": 0.506, "utility_corrupt": 0.458, "hour_detect_rate": 0.324, "hour_low_rate": 0.006, "patient_detect_rate": 0.982, "clean_same_window_flag_rate": 0.167, "clean_same_window_low_rate": 0.036, "septic_detected_clean": 465, "septic_detected_corrupt": 434, "alerts_suppressed": 35, "suppressed_but_warned": 35, "suppressed_warned_pct": 1.0, "false_alarms_created": 9, "created_fa_warned_pct": 1.0}
+23:03:27 {"corruption": "masking_attack", "auroc_clean": 0.811, "auroc_corrupt": 0.756, "utility_clean": 0.506, "utility_corrupt": 0.41, "hour_detect_rate": 0.606, "hour_low_rate": 0.155, "patient_detect_rate": 0.776, "clean_same_window_flag_rate": 0.177, "clean_same_window_low_rate": 0.04, "septic_detected_clean": 465, "septic_detected_corrupt": 417, "alerts_suppressed": 58, "suppressed_but_warned": 27, "suppressed_warned_pct": 0.466, "false_alarms_created": 16, "created_fa_warned_pct": 0.875}
+23:03:46 {"corruption": "measurement_noise", "auroc_clean": 0.811, "auroc_corrupt": 0.812, "utility_clean": 0.506, "utility_corrupt": 0.51, "hour_detect_rate": 0.058, "hour_low_rate": 0.006, "patient_detect_rate": 0.182, "clean_same_window_flag_rate": 0.172, "clean_same_window_low_rate": 0.04, "septic_detected_clean": 465, "septic_detected_corrupt": 467, "alerts_suppressed": 3, "suppressed_but_warned": 0, "suppressed_warned_pct": 0.0, "false_alarms_created": 6, "created_fa_warned_pct": 0.167}
+{
+ "hours": 1552210,
+ "hours_implausible": 2548,
+ "patients_with_implausible": 1451,
+ "hours_inconsistent": 1262,
+ "hours_flatline": 0,
+ "top_implausible_vars": {
+  "Resp": 1324,
+  "FiO2": 395,
+  "MAP": 325,
+  "O2Sat": 272,
+  "SBP": 135,
+  "DBP": 103,
+  "Temp": 18,
+  "Calcium": 16
+ }
+}

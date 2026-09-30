@@ -1,0 +1,25 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install pinned requirements
+        run: pip install -r requirements.txt
+      - name: Tests (leakage, isolation, integrity, utility, pipeline smoke)
+        run: python -m pytest -q tests
+      - name: Start dashboard (judge mode)
+        run: |
+          streamlit run app/app.py --server.headless true --server.port 8501 &
+          for i in $(seq 1 30); do curl -sf http://localhost:8501/_stcore/health && break; sleep 2; done
+          curl -sf http://localhost:8501/_stcore/health
+      - name: Trust-aware abstention behaves as documented (browser test)
+        run: |
+          pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+          python tools/dashboard_abstention_check.py

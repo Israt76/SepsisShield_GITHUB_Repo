@@ -1,0 +1,72 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { background: #fcfcfb; font-family: "Noto Sans CJK JP", "DejaVu Sans", sans-serif; color: #0b0b0b; }
+  .hero { position: relative; overflow: hidden; background: #fcfcfb; }
+  .w1920 { width: 1920px; height: 1080px; padding: 70px 80px; }
+  .w1500 { width: 1500px; height: 1000px; padding: 60px 64px; }
+  .top { display: flex; align-items: center; gap: 22px; }
+  .shield { width: 64px; height: 72px; }
+  .name { font-size: 50px; font-weight: 700; letter-spacing: -0.5px; }
+  .big { font-weight: 800; letter-spacing: -1px; line-height: 1.02; margin-top: 26px; }
+  .w1920 .big { font-size: 118px; } .w1500 .big { font-size: 84px; margin-top: 12px; }
+  .w1500 .tag { margin-top: 10px; }
+  .w1500 .panel { padding: 14px 18px 12px; }
+  .w1500 .top .name { font-size: 44px; }
+  .big .p { color: #2a78d6; } .big .t { color: #d03b3b; } .big .plus { color: #8a8984; font-weight: 400; }
+  .tag { color: #52514e; margin-top: 18px; }
+  .w1920 .tag { font-size: 34px; } .w1500 .tag { font-size: 29px; }
+  .panels { display: grid; gap: 22px; margin-top: 36px; }
+  .w1920 .panels { grid-template-columns: 1fr 1fr; } .w1500 .panels { grid-template-columns: 1fr; gap: 14px; margin-top: 20px; }
+  .panel { background: #fff; border: 2px solid #e6e5e1; border-radius: 20px; padding: 18px 20px 16px; }
+  .lbl { font-size: 19px; font-weight: 800; letter-spacing: 2px; margin-bottom: 10px; }
+  .lbl.p { color: #1c5cab; } .lbl.t { color: #b3461d; }
+  .panel img { width: 100%; display: block; border-radius: 10px; }
+  .cap { font-size: 20px; color: #52514e; margin-top: 10px; }
+  .foot { position: absolute; left: 80px; right: 80px; bottom: 34px; font-size: 20px; color: #8a8984; }
+  .w1500 .foot { left: 64px; bottom: 26px; font-size: 18px; }
+  .w1500 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+</style></head>
+<body>
+<!-- 16:9 video thumbnail / hero -->
+<div class="hero w1920" id="h1920">
+  <div class="top">
+    <svg class="shield" viewBox="0 0 100 112"><path d="M50 2 L96 16 L96 52 C96 80 76 100 50 110 C24 100 4 80 4 52 L4 16 Z" fill="#2a78d6"/>
+      <path d="M28 56 L44 72 L74 40" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="name">SepsisShield AI</div>
+    <div style="margin-left:auto;font-size:26px;color:#52514e">Trust-aware early warning for sepsis</div>
+  </div>
+  <div class="big" style="font-size:104px;margin-top:14px"><span class="p">PREDICTION</span> <span class="plus">+</span> <span class="t">TRUST</span></div>
+  <div class="tag" style="margin-top:8px">A sepsis early-warning prototype that withholds its prediction when its inputs can't be trusted.</div>
+  <div class="panel" style="margin-top:26px"><div class="lbl t">TRUST · EDITED CHART DETECTED → MODELS CONFIDENT, INPUTS NOT BELIEVABLE → PREDICTION WITHHELD</div>
+    <img src="hero_assets/_tiles_withheld.png"></div>
+  <div style="display:grid;grid-template-columns:1.55fr 1fr;gap:22px;margin-top:20px">
+    <div class="panel"><div class="lbl p">PREDICTION · ALERT 9 H BEFORE RECORDED ONSET (HELD-OUT PATIENT)</div>
+      <img src="hero_assets/_chart_alert_short.png"></div>
+    <div class="panel" style="display:flex;flex-direction:column;justify-content:center;gap:12px">
+      <div style="font-size:18px;font-weight:800;letter-spacing:2px;color:#52514e">CORRUPTION BENCHMARK · HELD-OUT PATIENTS</div>
+      <div style="font-size:24px;line-height:1.25"><b style="color:#2a78d6;font-size:44px">95.4%</b> of alert-changing <b>accidental</b> faults flagged or withheld <span style="color:#8a8984">(6,481 / 6,790)</span></div>
+      <div style="font-size:24px;line-height:1.25"><b style="color:#2a78d6;font-size:44px">0.46%</b> of clean predictions withheld</div>
+      <div style="font-size:24px;line-height:1.25"><b style="color:#b3461d;font-size:44px">42.5%</b> of <b>deliberately edited</b> inputs <span style="color:#8a8984">(334 / 786) · main limitation</span></div>
+    </div>
+  </div>
+  <div class="foot">Research prototype on de-identified PhysioNet 2019 data · not a medical device · GIBC V2 · Track 02</div>
+</div>
+
+<!-- 3:2 Devpost thumbnail -->
+<div class="hero w1500" id="h1500">
+  <div class="top">
+    <svg class="shield" viewBox="0 0 100 112"><path d="M50 2 L96 16 L96 52 C96 80 76 100 50 110 C24 100 4 80 4 52 L4 16 Z" fill="#2a78d6"/>
+      <path d="M28 56 L44 72 L74 40" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="name">SepsisShield AI</div>
+  </div>
+  <div class="big"><span class="p">PREDICTION</span> <span class="plus">+</span> <span class="t">TRUST</span></div>
+  <div class="tag">Sepsis early warning that withholds its prediction when its inputs can't be trusted.</div>
+  <div class="panels">
+    <div class="panel"><div class="lbl t">TRUST · EDITED CHART DETECTED → PREDICTION WITHHELD</div><img src="hero_assets/_tiles_withheld.png"></div>
+    <div class="panel"><div class="lbl p">PREDICTION · ALERT 9 H BEFORE RECORDED ONSET</div><img src="hero_assets/_chart_alert_short.png"></div>
+  </div>
+  <div class="foot">Research prototype · de-identified PhysioNet 2019 data · not a medical device</div>
+</div>
+</body></html>

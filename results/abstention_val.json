@@ -1,0 +1,311 @@
+{
+ "policy": "LOW=withhold, REDUCED=warn, HIGH=show",
+ "n_patients": 1543,
+ "clean_cost": {
+  "hours": 64487,
+  "withheld_pct": 0.004931226448741607,
+  "flagged_pct": 0.056352443128072326,
+  "true_alert_hours": 2744,
+  "true_alerts_withheld": 28,
+  "true_alerts_flagged": 354,
+  "septic_detected": 245,
+  "septic_detected_with_shown_alert": 245
+ },
+ "clean_cost_full_test": {
+  "patients": 4034,
+  "hours": 156913,
+  "withheld_hours": 752,
+  "withheld_pct": 0.004792464614149242,
+  "flagged_pct": 0.04857468788436905,
+  "patients_ever_withheld_pct": 0.12345066931085771,
+  "nonseptic_patients_ever_withheld_pct": 0.1128040630847367,
+  "median_withheld_hours_per_affected_patient": 1.0
+ },
+ "scenarios": [
+  {
+   "corruption": "temp_fahrenheit",
+   "suppressed": {
+    "n": 12,
+    "withheld": 6,
+    "flagged": 6,
+    "silent": 0,
+    "covered_attributable": 12
+   },
+   "spurious": {
+    "n": 2124,
+    "withheld": 772,
+    "flagged": 1333,
+    "silent": 19,
+    "covered_attributable": 1977
+   },
+   "all": {
+    "n": 2136,
+    "withheld": 778,
+    "flagged": 1339,
+    "silent": 19,
+    "covered_attributable": 1989
+   },
+   "spurious_in_useful_window": {
+    "n": 445,
+    "withheld": 173,
+    "flagged": 266,
+    "silent": 6,
+    "covered_attributable": 411
+   }
+  },
+  {
+   "corruption": "lab_unit_error",
+   "suppressed": {
+    "n": 1,
+    "withheld": 0,
+    "flagged": 0,
+    "silent": 1,
+    "covered_attributable": 0
+   },
+   "spurious": {
+    "n": 448,
+    "withheld": 128,
+    "flagged": 310,
+    "silent": 10,
+    "covered_attributable": 412
+   },
+   "all": {
+    "n": 449,
+    "withheld": 128,
+    "flagged": 310,
+    "silent": 11,
+    "covered_attributable": 412
+   },
+   "spurious_in_useful_window": {
+    "n": 123,
+    "withheld": 40,
+    "flagged": 74,
+    "silent": 9,
+    "covered_attributable": 107
+   }
+  },
+  {
+   "corruption": "sensor_artifact",
+   "suppressed": {
+    "n": 45,
+    "withheld": 22,
+    "flagged": 23,
+    "silent": 0,
+    "covered_attributable": 43
+   },
+   "spurious": {
+    "n": 604,
+    "withheld": 483,
+    "flagged": 121,
+    "silent": 0,
+    "covered_attributable": 560
+   },
+   "all": {
+    "n": 649,
+    "withheld": 505,
+    "flagged": 144,
+    "silent": 0,
+    "covered_attributable": 603
+   },
+   "spurious_in_useful_window": {
+    "n": 178,
+    "withheld": 135,
+    "flagged": 43,
+    "silent": 0,
+    "covered_attributable": 166
+   }
+  },
+  {
+   "corruption": "frozen_feed",
+   "suppressed": {
+    "n": 154,
+    "withheld": 1,
+    "flagged": 67,
+    "silent": 86,
+    "covered_attributable": 59
+   },
+   "spurious": {
+    "n": 110,
+    "withheld": 0,
+    "flagged": 41,
+    "silent": 69,
+    "covered_attributable": 37
+   },
+   "all": {
+    "n": 264,
+    "withheld": 1,
+    "flagged": 108,
+    "silent": 155,
+    "covered_attributable": 96
+   },
+   "spurious_in_useful_window": {
+    "n": 55,
+    "withheld": 0,
+    "flagged": 16,
+    "silent": 39,
+    "covered_attributable": 14
+   }
+  },
+  {
+   "corruption": "masking_attack",
+   "suppressed": {
+    "n": 393,
+    "withheld": 35,
+    "flagged": 143,
+    "silent": 215,
+    "covered_attributable": 158
+   },
+   "spurious": {
+    "n": 49,
+    "withheld": 12,
+    "flagged": 22,
+    "silent": 15,
+    "covered_attributable": 30
+   },
+   "all": {
+    "n": 442,
+    "withheld": 47,
+    "flagged": 165,
+    "silent": 230,
+    "covered_attributable": 188
+   },
+   "spurious_in_useful_window": {
+    "n": 22,
+    "withheld": 2,
+    "flagged": 6,
+    "silent": 14,
+    "covered_attributable": 5
+   }
+  },
+  {
+   "corruption": "measurement_noise",
+   "suppressed": {
+    "n": 15,
+    "withheld": 0,
+    "flagged": 1,
+    "silent": 14,
+    "covered_attributable": 0
+   },
+   "spurious": {
+    "n": 24,
+    "withheld": 1,
+    "flagged": 1,
+    "silent": 22,
+    "covered_attributable": 1
+   },
+   "all": {
+    "n": 39,
+    "withheld": 1,
+    "flagged": 2,
+    "silent": 36,
+    "covered_attributable": 1
+   },
+   "spurious_in_useful_window": {
+    "n": 14,
+    "withheld": 0,
+    "flagged": 1,
+    "silent": 13,
+    "covered_attributable": 0
+   }
+  }
+ ],
+ "definition": "flip AND wrong: suppressed timely alert, or new alert outside any useful window",
+ "dfc_accidental": {
+  "suppressed": {
+   "n": 212,
+   "withheld": 29,
+   "flagged": 96,
+   "silent": 87,
+   "covered_attributable": 114,
+   "attributable_coverage": 0.5377358490566038,
+   "coverage": 0.589622641509434,
+   "withheld_share": 0.13679245283018868
+  },
+  "spurious": {
+   "n": 3286,
+   "withheld": 1383,
+   "flagged": 1805,
+   "silent": 98,
+   "covered_attributable": 2986,
+   "attributable_coverage": 0.9087035909920876,
+   "coverage": 0.9701765063907486,
+   "withheld_share": 0.42087644552647596
+  },
+  "all": {
+   "n": 3498,
+   "withheld": 1412,
+   "flagged": 1901,
+   "silent": 185,
+   "covered_attributable": 3100,
+   "attributable_coverage": 0.8862206975414523,
+   "coverage": 0.9471126357918811,
+   "withheld_share": 0.4036592338479131
+  }
+ },
+ "dfc_masking": {
+  "suppressed": {
+   "n": 393,
+   "withheld": 35,
+   "flagged": 143,
+   "silent": 215,
+   "covered_attributable": 158,
+   "attributable_coverage": 0.4020356234096692,
+   "coverage": 0.4529262086513995,
+   "withheld_share": 0.089058524173028
+  },
+  "spurious": {
+   "n": 49,
+   "withheld": 12,
+   "flagged": 22,
+   "silent": 15,
+   "covered_attributable": 30,
+   "attributable_coverage": 0.6122448979591837,
+   "coverage": 0.6938775510204082,
+   "withheld_share": 0.24489795918367346
+  },
+  "all": {
+   "n": 442,
+   "withheld": 47,
+   "flagged": 165,
+   "silent": 230,
+   "covered_attributable": 188,
+   "attributable_coverage": 0.4253393665158371,
+   "coverage": 0.4796380090497738,
+   "withheld_share": 0.10633484162895927
+  }
+ },
+ "dfc_noise_control": {
+  "suppressed": {
+   "n": 15,
+   "withheld": 0,
+   "flagged": 1,
+   "silent": 14,
+   "covered_attributable": 0,
+   "attributable_coverage": 0.0,
+   "coverage": 0.06666666666666667,
+   "withheld_share": 0.0
+  },
+  "spurious": {
+   "n": 24,
+   "withheld": 1,
+   "flagged": 1,
+   "silent": 22,
+   "covered_attributable": 1,
+   "attributable_coverage": 0.041666666666666664,
+   "coverage": 0.08333333333333333,
+   "withheld_share": 0.041666666666666664
+  },
+  "all": {
+   "n": 39,
+   "withheld": 1,
+   "flagged": 2,
+   "silent": 36,
+   "covered_attributable": 1,
+   "attributable_coverage": 0.02564102564102564,
+   "coverage": 0.07692307692307693,
+   "withheld_share": 0.02564102564102564
+  }
+ },
+ "runtime_s": 120.6655626296997,
+ "cohort": "val"
+}

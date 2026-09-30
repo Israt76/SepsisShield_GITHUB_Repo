@@ -1,0 +1,391 @@
+{
+ "baselines": [
+  {
+   "model": "SIRS criteria (rule: \u22652 of 4)",
+   "auroc": 0.6353829360648329,
+   "auprc": 0.029236950398675365,
+   "utility": 0.035842931813344116,
+   "patient_sensitivity": 0.8208191126279863,
+   "patient_specificity": 0.26476877840149693,
+   "pct_detected_ge6h_early": 0.5870307167235495,
+   "ece": null,
+   "threshold": 2
+  },
+  {
+   "model": "qSOFA-partial (rule: \u22651 of 2)",
+   "auroc": 0.5759125381892479,
+   "auprc": 0.022041950908842565,
+   "utility": -0.05431517702987164,
+   "patient_sensitivity": 0.8686006825938567,
+   "patient_specificity": 0.0970328789093825,
+   "pct_detected_ge6h_early": 0.6450511945392492,
+   "ece": null,
+   "threshold": 1
+  },
+  {
+   "model": "Logistic regression (+ isotonic)",
+   "auroc": 0.7506813579890768,
+   "auprc": 0.07225909276521866,
+   "utility": 0.2842310967101062,
+   "ece": 0.0018316504180905958,
+   "patient_sensitivity": 0.7679180887372014,
+   "patient_specificity": 0.5739107190590751,
+   "pct_detected_ge6h_early": 0.5358361774744027,
+   "threshold": 0.0275
+  },
+  {
+   "model": "Single LightGBM (uncalibrated)",
+   "auroc": 0.852355652431263,
+   "auprc": 0.1308473512245668,
+   "utility": 0.42817577635344484,
+   "ece": 0.0031496811453571466,
+   "patient_sensitivity": 0.8310580204778157,
+   "patient_specificity": 0.702218658112804,
+   "pct_detected_ge6h_early": 0.5870307167235495,
+   "threshold": 0.0275
+  },
+  {
+   "model": "5-model LightGBM ensemble (uncalibrated)",
+   "auroc": 0.8532469540311651,
+   "auprc": 0.13033377622302966,
+   "utility": 0.4285890825666375,
+   "ece": 0.0031846924136557583,
+   "patient_sensitivity": 0.8088737201365188,
+   "patient_specificity": 0.7266773589949211,
+   "pct_detected_ge6h_early": 0.552901023890785,
+   "threshold": 0.030000000000000002
+  },
+  {
+   "model": "Ensemble + isotonic calibration (SepsisShield model)",
+   "auroc": 0.8523691451264956,
+   "auprc": 0.12157608709111817,
+   "utility": 0.42516969797308485,
+   "ece": 0.0028498484168508146,
+   "patient_sensitivity": 0.7935153583617748,
+   "patient_specificity": 0.7377706495589414,
+   "pct_detected_ge6h_early": 0.5392491467576792,
+   "threshold": 0.030000000000000002
+  }
+ ],
+ "bootstrap_ci": {
+  "sepsisshield": {
+   "auroc": [
+    0.8399948877160762,
+    0.8647789186249847
+   ],
+   "auprc": [
+    0.1045143546526097,
+    0.14203211613365266
+   ],
+   "utility": [
+    0.39377664373369164,
+    0.45450807280711564
+   ],
+   "patient_sensitivity": [
+    0.7590675481632164,
+    0.8247806724120105
+   ],
+   "patient_specificity": [
+    0.7277264885671938,
+    0.7494558597453942
+   ]
+  },
+  "B": 500,
+  "unit": "patient"
+ },
+ "threshold_sweep": {
+  "chosen": 0.030000000000000002,
+  "rows": [
+   {
+    "threshold": 0.01,
+    "utility_test": 0.29146661621059106,
+    "utility_val": 0.2715662988919959,
+    "patient_sensitivity": 0.9692832764505119,
+    "patient_specificity": 0.25942261427425817,
+    "false_alert_hours_per_100_patient_days": 799.5439029704409
+   },
+   {
+    "threshold": 0.015,
+    "utility_test": 0.4314834086232587,
+    "utility_val": 0.45458704325544935,
+    "patient_sensitivity": 0.8907849829351536,
+    "patient_specificity": 0.5838011226944667,
+    "false_alert_hours_per_100_patient_days": 366.7978792940664
+   },
+   {
+    "threshold": 0.02,
+    "utility_test": 0.4346047870201746,
+    "utility_val": 0.46979957645462095,
+    "patient_sensitivity": 0.878839590443686,
+    "patient_specificity": 0.6273723603314622,
+    "false_alert_hours_per_100_patient_days": 311.41259350715376
+   },
+   {
+    "threshold": 0.025,
+    "utility_test": 0.4342724864596391,
+    "utility_val": 0.47989446465970115,
+    "patient_sensitivity": 0.825938566552901,
+    "patient_specificity": 0.6995455760491847,
+    "false_alert_hours_per_100_patient_days": 229.35870433582687
+   },
+   {
+    "threshold": 0.03,
+    "utility_test": 0.42662011305314446,
+    "utility_val": 0.48127859223812136,
+    "patient_sensitivity": 0.7986348122866894,
+    "patient_specificity": 0.7354985298048651,
+    "false_alert_hours_per_100_patient_days": 191.75248747185708
+   },
+   {
+    "threshold": 0.035,
+    "utility_test": 0.4237086398145739,
+    "utility_val": 0.48046660192584445,
+    "patient_sensitivity": 0.7815699658703071,
+    "patient_specificity": 0.7485966319165999,
+    "false_alert_hours_per_100_patient_days": 178.13929842399594
+   },
+   {
+    "threshold": 0.04,
+    "utility_test": 0.3907706771363024,
+    "utility_val": 0.4643987878646059,
+    "patient_sensitivity": 0.7064846416382252,
+    "patient_specificity": 0.8255813953488372,
+    "false_alert_hours_per_100_patient_days": 111.16275691771371
+   },
+   {
+    "threshold": 0.045,
+    "utility_test": 0.3907813202147537,
+    "utility_val": 0.4643987878646059,
+    "patient_sensitivity": 0.7064846416382252,
+    "patient_specificity": 0.8257150494520182,
+    "false_alert_hours_per_100_patient_days": 111.14532645798533
+   },
+   {
+    "threshold": 0.05,
+    "utility_test": 0.37578404011258015,
+    "utility_val": 0.4516315857211387,
+    "patient_sensitivity": 0.6723549488054608,
+    "patient_specificity": 0.8491045175086875,
+    "false_alert_hours_per_100_patient_days": 92.25070811242647
+   },
+   {
+    "threshold": 0.055,
+    "utility_test": 0.3554445259099832,
+    "utility_val": 0.4370672407539576,
+    "patient_sensitivity": 0.6331058020477816,
+    "patient_specificity": 0.8757016840417001,
+    "false_alert_hours_per_100_patient_days": 74.87253976323626
+   },
+   {
+    "threshold": 0.06,
+    "utility_test": 0.33522563326316795,
+    "utility_val": 0.4202541272274158,
+    "patient_sensitivity": 0.5938566552901023,
+    "patient_specificity": 0.89641807003475,
+    "false_alert_hours_per_100_patient_days": 60.623138935289425
+   },
+   {
+    "threshold": 0.065,
+    "utility_test": 0.33523095480239357,
+    "utility_val": 0.4202541272274158,
+    "patient_sensitivity": 0.5938566552901023,
+    "patient_specificity": 0.89641807003475,
+    "false_alert_hours_per_100_patient_days": 60.623138935289425
+   },
+   {
+    "threshold": 0.07,
+    "utility_test": 0.33523095480239357,
+    "utility_val": 0.4202541272274158,
+    "patient_sensitivity": 0.5938566552901023,
+    "patient_specificity": 0.89641807003475,
+    "false_alert_hours_per_100_patient_days": 60.623138935289425
+   },
+   {
+    "threshold": 0.075,
+    "utility_test": 0.27218904472458083,
+    "utility_val": 0.3601095133908201,
+    "patient_sensitivity": 0.47440273037542663,
+    "patient_specificity": 0.9417268110130981,
+    "false_alert_hours_per_100_patient_days": 30.599172053162903
+   },
+   {
+    "threshold": 0.08,
+    "utility_test": 0.2721943662638065,
+    "utility_val": 0.3601095133908201,
+    "patient_sensitivity": 0.47440273037542663,
+    "patient_specificity": 0.9417268110130981,
+    "false_alert_hours_per_100_patient_days": 30.599172053162903
+   },
+   {
+    "threshold": 0.085,
+    "utility_test": 0.2715912584848987,
+    "utility_val": 0.35977956920052884,
+    "patient_sensitivity": 0.47440273037542663,
+    "patient_specificity": 0.942261427425822,
+    "false_alert_hours_per_100_patient_days": 30.46844360520009
+   },
+   {
+    "threshold": 0.09,
+    "utility_test": 0.2631122726520187,
+    "utility_val": 0.3507189741309715,
+    "patient_sensitivity": 0.4590443686006826,
+    "patient_specificity": 0.9481422079657845,
+    "false_alert_hours_per_100_patient_days": 27.897450795264728
+   },
+   {
+    "threshold": 0.095,
+    "utility_test": 0.2631122726520187,
+    "utility_val": 0.3507189741309715,
+    "patient_sensitivity": 0.4590443686006826,
+    "patient_specificity": 0.9481422079657845,
+    "false_alert_hours_per_100_patient_days": 27.897450795264728
+   },
+   {
+    "threshold": 0.1,
+    "utility_test": 0.26312291573047,
+    "utility_val": 0.3507189741309715,
+    "patient_sensitivity": 0.4590443686006826,
+    "patient_specificity": 0.9481422079657845,
+    "false_alert_hours_per_100_patient_days": 27.880020335536347
+   },
+   {
+    "threshold": 0.12,
+    "utility_test": 0.24683072775005327,
+    "utility_val": 0.3241502767085142,
+    "patient_sensitivity": 0.43686006825938567,
+    "patient_specificity": 0.9572306869820904,
+    "false_alert_hours_per_100_patient_days": 22.650882417023748
+   },
+   {
+    "threshold": 0.14,
+    "utility_test": 0.22934888011163412,
+    "utility_val": 0.30338017292819613,
+    "patient_sensitivity": 0.4112627986348123,
+    "patient_specificity": 0.9637797380379578,
+    "false_alert_hours_per_100_patient_days": 19.278088459583124
+   },
+   {
+    "threshold": 0.16,
+    "utility_test": 0.13913992100470668,
+    "utility_val": 0.17255262141829197,
+    "patient_sensitivity": 0.28498293515358364,
+    "patient_specificity": 0.9883720930232558,
+    "false_alert_hours_per_100_patient_days": 7.303362626189267
+   },
+   {
+    "threshold": 0.18,
+    "utility_test": 0.10845474326529654,
+    "utility_val": 0.14354678304414464,
+    "patient_sensitivity": 0.2354948805460751,
+    "patient_specificity": 0.9909115209836942,
+    "false_alert_hours_per_100_patient_days": 5.403442515796354
+   },
+   {
+    "threshold": 0.2,
+    "utility_test": 0.10845474326529654,
+    "utility_val": 0.14354678304414464,
+    "patient_sensitivity": 0.2354948805460751,
+    "patient_specificity": 0.9909115209836942,
+    "false_alert_hours_per_100_patient_days": 5.403442515796354
+   },
+   {
+    "threshold": 0.22,
+    "utility_test": 0.10211915517608385,
+    "utility_val": 0.13444874749909322,
+    "patient_sensitivity": 0.22866894197952217,
+    "patient_specificity": 0.991847099705961,
+    "false_alert_hours_per_100_patient_days": 4.880528723945094
+   },
+   {
+    "threshold": 0.24,
+    "utility_test": 0.08523805018802771,
+    "utility_val": 0.11211784389661753,
+    "patient_sensitivity": 0.189419795221843,
+    "patient_specificity": 0.9934509489441326,
+    "false_alert_hours_per_100_patient_days": 3.9479991284770137
+   },
+   {
+    "threshold": 0.26,
+    "utility_test": 0.06492750881010385,
+    "utility_val": 0.08638336706876173,
+    "patient_sensitivity": 0.16040955631399317,
+    "patient_specificity": 0.9951884522854851,
+    "false_alert_hours_per_100_patient_days": 2.8498801655893677
+   },
+   {
+    "threshold": 0.28,
+    "utility_test": 0.06492750881010385,
+    "utility_val": 0.08638336706876173,
+    "patient_sensitivity": 0.16040955631399317,
+    "patient_specificity": 0.9951884522854851,
+    "false_alert_hours_per_100_patient_days": 2.8498801655893677
+   },
+   {
+    "threshold": 0.3,
+    "utility_test": 0.022923417137721423,
+    "utility_val": 0.02740759807649553,
+    "patient_sensitivity": 0.07337883959044368,
+    "patient_specificity": 0.9990644212777332,
+    "false_alert_hours_per_100_patient_days": 0.7669402280485148
+   }
+  ]
+ },
+ "recalibration": [
+  {
+   "transfer": "A\u2192B",
+   "as_is": {
+    "auroc": 0.790274768120752,
+    "auprc": 0.06238996510017677,
+    "utility": 0.298962547305233,
+    "ece": 0.00537052981888192,
+    "patient_sensitivity": 0.6236323851203501,
+    "patient_specificity": 0.7657430730478589,
+    "pct_detected_ge6h_early": 0.4420131291028446,
+    "threshold": 0.025
+   },
+   "recalibrated": {
+    "auroc": 0.7907753306024233,
+    "auprc": 0.06153467854233884,
+    "utility": 0.2987606604693293,
+    "ece": 0.001138081963848607,
+    "patient_sensitivity": 0.6050328227571116,
+    "patient_specificity": 0.7964337796632639,
+    "pct_detected_ge6h_early": 0.424507658643326,
+    "threshold": 0.0275
+   },
+   "n_local_patients": 4000,
+   "n_eval_patients": 16000
+  },
+  {
+   "transfer": "B\u2192A",
+   "as_is": {
+    "auroc": 0.7754125034548709,
+    "auprc": 0.08157816453785884,
+    "utility": 0.31628480965915184,
+    "ece": 0.008338332495318786,
+    "patient_sensitivity": 0.9085195530726257,
+    "patient_specificity": 0.2879288265821932,
+    "pct_detected_ge6h_early": 0.7674581005586593,
+    "threshold": 0.0275
+   },
+   "recalibrated": {
+    "auroc": 0.7755923688727014,
+    "auprc": 0.08161905803652317,
+    "utility": 0.3378413663468709,
+    "ece": 0.0019620031571517434,
+    "patient_sensitivity": 0.8386871508379888,
+    "patient_specificity": 0.3840399002493765,
+    "pct_detected_ge6h_early": 0.6955307262569832,
+    "threshold": 0.030000000000000002
+   },
+   "n_local_patients": 4067,
+   "n_eval_patients": 16269
+  }
+ ],
+ "subgroup_counts": {
+  "hospital": {
+   "A": 358,
+   "B": 228
+  }
+ }
+}
