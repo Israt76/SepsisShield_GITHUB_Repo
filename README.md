@@ -1,52 +1,214 @@
-# 🛡️ SepsisShield AI — Trust-Aware Early Warning for Sepsis
+# 🛡️ SepsisShield AI: Trust-Aware Early Warning for Sepsis
 
-**Most early-warning models assume their inputs are trustworthy. SepsisShield tests that assumption before asking
-anyone to trust its prediction.**
+**SepsisShield predicts sepsis early and runs independent input-integrity checks on the clinical data behind each
+prediction, so it can warn about or withhold a prediction when those inputs look unreliable.**
 
-A research prototype for GIBC V2 · Track 02 · built on de-identified PhysioNet data · **not a medical device and not
-for clinical use.**
+Built on de-identified PhysioNet 2019 ICU data. **Research prototype only. Not a medical device and not
+intended for clinical decision-making.**
 
 ---
 
-## Judge in 60 seconds
-
-In this project, “clinical data” refers to de-identified ICU time-series measurements from the PhysioNet 2019 Sepsis Challenge dataset, including vital signs, laboratory measurements, and other patient variables recorded over time.
+## 30-second judge summary
 
 | | |
 |---|---|
-| **Problem** | Sepsis early-warning models fail silently when their inputs are wrong: a °F thermometer in a °C field, a lab in the wrong units, a frozen monitor feed or an edited chart all produce a normal-looking prediction. |
-| **Novelty** | A **trust path** that runs beside the prediction path. An input-integrity layer, fitted only on clean training data, grades every patient-hour's inputs HIGH / REDUCED / LOW. The system then **abstains** on LOW (withholds the prediction and asks for data verification) and warns on REDUCED. Model confidence and input trust are measured and shown separately. |
-| **Strongest evidence** | Held-out test set of 8,068 patients: AUROC **0.852** (95% CI 0.840–0.865), **79%** of sepsis patients alerted. **95.4% of alert-changing accidental data faults in our corruption benchmark were flagged or withheld (6,481 / 6,790), while only 0.46% of clean predictions were withheld.** Replicated on the validation cohort: 94.7% (3,313 / 3,498). |
-| **Honest limit** | Detection was substantially weaker for **deliberately edited inputs: 42.5% (334 / 786)**, an important limitation and direction for future work. Performance also drops at an unseen hospital (AUROC 0.79 / 0.78). |
-| **Run it** | `pip install -r requirements.txt` → `streamlit run app/app.py` — no data download, no training: models and held-out demo patients ship with the repo. |
-| **Video** | [`submission/SepsisShield_demo.mp4`](submission/SepsisShield_demo.mp4) (2:28, 1920×1200 with subtitles in a band below the picture; opens with a 7.5 s clinical animation) · audit of every claim: [AUDIT.md](AUDIT.md) |
+| **Problem** | A sepsis prediction can look normal even when the clinical inputs are wrong: a °F thermometer in a °C field, a lab in the wrong units, a frozen monitor feed or an edited chart. |
+| **Innovation** | SepsisShield shows **model confidence** and **input trust** as separate signals, because a model can be confident about corrupted inputs. It performs independent input-integrity checks alongside the prediction path and grades every patient-hour's inputs HIGH / REDUCED / LOW. Model disagreement may reduce trust to REDUCED, but LOW trust and prediction withholding are triggered only by evidence from the clinical inputs. |
+| **Action** | HIGH → **show** the prediction · REDUCED → **warn** (verify inputs) · LOW → **withhold** until the data are checked |
+| **Strongest evidence** | Held-out test set of 8,068 patients: AUROC **0.852** (95% CI 0.840–0.865). **53.9%** of septic patients alerted at least 6 h before onset. **95.4%** of alert-changing wrong decisions caused by four simulated accidental fault types were flagged or withheld (6,481 / 6,790; validation-cohort replication **94.7%**), while only **0.46%** of clean patient-hours were withheld. |
+| **Also shown** | A separate **distribution-shift awareness** signal (LOW / MODERATE / HIGH): does this patient's recent input pattern differ from the training data? It is advisory only: it never changes the prediction, the input-trust state or the final decision. |
+| **Limitations** | Deliberately edited inputs: only **42.5%** caught (334 / 786), and 26.5% (232 / 876) when the simulated edits stay physiologically plausible. Performance drops at an unseen hospital (AUROC **0.790 / 0.775**). Faults are simulated, not recorded hospital incidents. |
+| **Try it** | Live demo: **[https://sepsisshieldapprepo-diqdknfnksrq5yyf6wkcrd.streamlit.app/](https://sepsisshieldapprepo-diqdknfnksrq5yyf6wkcrd.streamlit.app/)** · or run locally in 60 seconds (below) · demo video: linked on the Devpost project page · claim audit: [AUDIT.md](AUDIT.md) |
+
+In this project, "clinical data" means the de-identified ICU time-series measurements in the PhysioNet 2019 Sepsis
+Challenge dataset: vital signs, laboratory measurements and other patient variables recorded hour by hour.
+
+## Live demo
+
+**[https://sepsisshieldapprepo-diqdknfnksrq5yyf6wkcrd.streamlit.app/](https://sepsisshieldapprepo-diqdknfnksrq5yyf6wkcrd.streamlit.app/)** (Streamlit Community Cloud; first load after inactivity can take ~30 s while the app wakes). The page
+opens directly on Judge Demo scenario A.
+
+![Judge Demo Mode: edited chart, model confident, input trust LOW, prediction withheld](results/screenshots/02_prediction_withheld.png)
+
+## Core architecture
+
+SepsisShield separates prediction from input verification. One path estimates sepsis risk, while independent
+input-integrity checks evaluate whether the clinical inputs appear reliable. A decision layer then decides whether the
+prediction is shown, shown with a warning, or withheld. Model disagreement may reduce trust to REDUCED, but LOW trust and prediction withholding are triggered only by evidence from the clinical inputs.
+
+```
+                    ICU time-series data (hourly vitals, labs, demographics)
+                                         |
+                  +----------------------+----------------------+
+                  |                                             |
+          PREDICTION PATH                                  TRUST PATH
+  172 causal features -> 5x LightGBM              input-integrity checks on the raw data
+  -> isotonic calibration -> SHAP                 (plausibility, BP consistency, jumps,
+                  |                                coordinated normalising shift, frozen feed)
+       Sepsis risk + alert                                      |
+       Model confidence (5-model spread)              Input trust: HIGH / REDUCED / LOW
+                  |                                             |
+                  +----------------------+----------------------+
+                                         |
+                                  DECISION LAYER
+                     SHOW  /  WARN (verify inputs)  /  WITHHOLD
+
+  Advisory, shown beside the decision (never changes it):
+  DISTRIBUTION-SHIFT AWARENESS  20 key model inputs vs their training range -> LOW / MODERATE / HIGH shift
+```
 
 ![Architecture](results/figures/0_architecture.png)
 
----
+*Exact rule (`src/integrity.py::trust_level`):* LOW, and therefore withholding, is triggered **only by input evidence**
+(physiologically implausible values, inconsistent blood pressure, a coordinated "normalising" shift). REDUCED is triggered by other input
+flags or by unusual disagreement between the five models. So model confidence can lower trust to REDUCED, but it can
+never cause a withhold, and it can never raise trust.
 
-## Quick start (judge mode, ~2 minutes)
+## Why SepsisShield is different
+
+A conceptual comparison of system designs, not a claim about any specific commercial or academic system:
+
+| | Standard sepsis predictor | Confidence-only safety | **SepsisShield** |
+|---|---|---|---|
+| Predicts sepsis risk | ✓ | ✓ | ✓ |
+| Shows model uncertainty / confidence | – | ✓ | ✓ |
+| Independently checks whether the **inputs** are believable | – | – | ✓ |
+| Behaviour when corrupted inputs look plausible to the model | confident prediction | confidence may stay high | trust drops → warn or withhold |
+| Explains *why* it reacted | – | – | ✓ names the check that fired |
+
+**Why model confidence is not enough.** Ensemble agreement measures how consistent the model is with itself. It
+does not show that the clinical data are correct. In Judge Demo scenarios B and C below, all five models agree
+(*Confident*) while the inputs are wrong. SepsisShield therefore treats model confidence and input trust as separate
+signals.
+
+**Real-world problem.** Clinical measurements can be wrong: unit mismatches, frozen monitor feeds, typing errors and
+edited chart values. An ML model receiving such inputs can still return a plausible-looking number. SepsisShield
+adds an input-reliability layer *before* a prediction is trusted. It does not claim to improve patient outcomes, which
+were not measured.
+
+**Intended users (research setting):** ICU clinicians (decision *support*, not a replacement for clinical judgement),
+clinical informatics teams, and hospital ML / AI monitoring teams.
+
+**Example workflow:** ICU measurements arrive → SepsisShield estimates risk → the trust path checks the inputs → a fault
+is detected (e.g. a physiologically implausible temperature) → the models may still be confident → input trust drops → the prediction
+is shown with a warning or withheld → the user is asked to verify the named measurement.
+
+## Strongest results
+
+| Held-out test set (8,068 patients, 586 septic) | Value |
+|---|---|
+| AUROC | **0.852** (95% CI 0.840–0.865) |
+| Sepsis patients alerted | **79.4%** (465 / 586) |
+| Alerted ≥ 6 h before onset | **53.9%** (316 / 586) |
+| Alert-changing wrong decisions from 4 simulated accidental fault types, flagged or withheld | **95.4%** (6,481 / 6,790); validation replication 94.7% |
+| Clean patient-hours withheld | **0.46%** (1,438 / 309,270) |
+| **Known limitation:** deliberately edited inputs flagged or withheld | **42.5%** (334 / 786); 26.5% (232 / 876) when the simulated edits are kept inside normal physiological ranges (sensitivity check, `results/masking_realism.json`) |
+| **Known limitation:** cross-hospital AUROC (train one hospital, test the other) | **0.790 / 0.775** |
+
+Details, confidence intervals, baselines and definitions are in [Results](#results) and
+[The trust path](#the-trust-path--what-is-new).
+
+## Judge Demo Mode
+
+Three buttons at the top of the dashboard each load a real held-out test patient, scored live by the shipped models.
+The four cards (**Sepsis risk · Model confidence · Input trust · Final decision**) update immediately. Below the cards,
+judges can compare clean vs corrupted inputs and see why each decision was made:
+* **Clean vs corrupted** (B and C): the same patient-hour scored on the clean and the corrupted data, side by side:
+  risk, alert, model confidence, input trust and final decision. For B: 0.9%, no alert, Confident, HIGH, shown → 3.9%,
+  alert, still Confident, LOW, withheld.
+* **Why was this decision made?**: the rule that produced the decision, the top three SHAP risk drivers, the integrity
+  reasons, and the distribution-shift state, in one compact panel.
+* In *Results & limitations*, an **Evidence behind the 95.4% claim** expander gives the 6,481 / 6,790 breakdown by
+  fault type, the definition, the scope (accidental faults only, with 42.5% / 26.5% for deliberate edits) and links to
+  `results/abstention.json`, `src/abstention.py` and AUDIT.md.
+
+| Scenario | Patient · hour | Model confidence | Input trust | Final decision | Shareable link |
+|---|---|---|---|---|---|
+| **A · Clean inputs** (normal case) | p119917 · h58 | Confident | HIGH | **SHOW PREDICTION** (this patient's first alert was at h55, 9 h before recorded onset) | `?pid=p119917&hour=58` |
+| **B · Accidental data fault** (°F thermometer) | p119917 · h36 | Confident | LOW (physiologically implausible temperature) | **PREDICTION WITHHELD** (the fault would have caused a false alert, 28 h before onset and outside the useful window) | `?pid=p119917&corr=Thermometer%20reports%20°F&start=34&len=8&hour=36` |
+| **C · Edited chart** | p018345 · h46 | Confident | LOW (only the coordinated-shift detector fires) | **PREDICTION WITHHELD** (the edit hid an alert the model raises on the real data: 3.5% → 2.3%) | `?pid=p018345&corr=Vitals%20overwritten%20to%20look%20normal&start=46&len=12&hour=46` |
+
+| *Optional* **D · Unusual patient (distribution shift)** | p105030 · h40 | Confident | HIGH | **SHOW PREDICTION**, risk 0.6%, no alert. **Shift HIGH:** white cell count ~100–170, far outside the training range. This patient developed sepsis 7 h later | `?pid=p105030&hour=40` |
+
+Move scenario B one hour later (`hour=37`) to see the third state, **VERIFY INPUTS** (trust REDUCED: the fault is
+still inside the 6–12 h trend features). Scenario C shows a *caught* edit; most simulated edits are not caught (see
+limitations), and later hours of C's window also contain physiologically implausible respiratory rates produced by the simulation. The expected outcome of every scenario is asserted in
+`tests/test_judge_demo.py` and in the browser test, so the demo cannot drift from what the models actually do.
+
+| Clean inputs: trust HIGH → SHOW | Accidental fault (°F): trust LOW → WITHHELD |
+|---|---|
+| ![](results/screenshots/01_judge_demo_normal.png) | ![](results/screenshots/03_fahrenheit_fault.png) |
+
+## Run in 60 seconds
 
 ```bash
-git clone <this repo> && cd sepsisshield
+git clone https://github.com/Israt76/SepsisShield_GITHUB_Repo.git && cd SepsisShield_GITHUB_Repo
 pip install -r requirements.txt          # exact pinned versions, Python 3.11
-streamlit run app/app.py                 # dashboard with shipped models + 52 held-out test patients
-python -m pytest -q tests                # 29 tests (1 needs raw data → skipped in judge mode)
+streamlit run app/app.py                 # opens on Judge Demo scenario A
 ```
 
-Useful links inside the dashboard (the URL parameters set patient, fault and hour):
+No raw dataset download or retraining is required for judge mode: the five trained models, calibrator, integrity
+thresholds, result files and 52 held-out demo patients ship with the repository. No API keys or credentials are needed.
 
-* `?pid=p119917&hour=58` — early warning, 9 h before onset, all inputs trusted
-* `?pid=p119917&corr=Thermometer%20reports%20°F&start=34&len=8&hour=36` — false alert from a unit error → withheld
-* `?pid=p018345&corr=Vitals%20overwritten%20to%20look%20normal&start=46&len=12&hour=48` — edited chart hides the alert → withheld
+```bash
+python -m pytest -q tests                # 62 tests (1 needs the raw data and is skipped in judge mode)
+```
 
 Full reproduction from raw data is [below](#reproduce-everything-from-raw-data).
 
-| Early warning, all inputs trusted | Edited chart: models confident, inputs not → prediction withheld |
+## Distribution-shift awareness (advisory signal)
+
+A fourth signal, kept separate from the other three:
+
+| Signal | Question it answers |
 |---|---|
-| ![](results/screenshots/01_hero_monitor.png) | ![](results/screenshots/02_prediction_withheld.png) |
+| Sepsis risk | What is the estimated clinical risk? |
+| Model confidence | Do the five models agree? |
+| Input trust | Do the current measurements look reliable? |
+| **Distribution shift** | **Does this patient's recent input pattern differ from the training data?** |
+
+**Method (patient-level, transparent, no extra model; `src/shift.py`).**
+1. *Features:* the 20 model inputs with the highest mean LightGBM gain across the five shipped models, excluding the
+   ICU-hour index (`ICULOS`), whose range reflects stay length rather than physiology or care practice. They include
+   labs (WBC, creatinine, platelets, BUN, PTT, alkaline phosphatase), temperature, care-process signals (hours since
+   FiO₂ / lactate / PaCO₂ / EtCO₂ were last measured, labs ordered so far, hospital-to-ICU time), age and ICU type.
+2. *Reference:* each feature's 0.5th and 99.5th percentile on the **training patients only** (28,234 patients,
+   1,086,027 hours; `models/shift_reference.json`).
+3. *Score:* at each hour, the share of observed features outside that range, averaged over the last 6 hours
+   (causal: later hours are never used). Missing values are ignored.
+4. *States:* thresholds are quantiles of the same score on training patient-hours. **LOW** ≤ q95 (0.059),
+   **MODERATE** ≤ q99 (0.127), **HIGH** above q99. So MODERATE means more unusual than 95% of training
+   patient-hours, and HIGH more unusual than 99%.
+5. The panel lists the features that triggered the state, their values and the training range. It **never** changes
+   the risk, the alert, input trust or the final decision.
+
+**What was checked (held-out data; `results/shift_evaluation.json`).**
+* The thresholds transfer to held-out patients from the same hospitals: 4.6% of test hours are
+  flagged MODERATE or HIGH, vs 4.8% in training.
+* *Does it notice an unseen hospital?* With the reference refitted on one hospital's training patients only, hours
+  flagged MODERATE or HIGH are 4.3% at the same hospital vs 7.4% at the other
+  (reference A), and 4.7% vs 8.5% (reference B). This is a consistent but
+  modest increase.
+* *Exploratory:* on the test set, the shipped model's hour-level AUROC is 0.852 in LOW-shift hours
+  (95% CI 0.838–0.865), 0.857 in MODERATE
+  (0.819–0.892) and **0.749** in HIGH
+  (0.621–0.862; 452 patients, patient-level
+  bootstrap). In HIGH-shift hours the model also over-predicts (mean predicted 4.8% vs
+  observed 3.7%). The interval is wide and overlaps, so this is suggestive, not validation.
+
+**Limitation.** Distribution-shift awareness indicates that an input pattern differs from the training distribution;
+it does not establish that a prediction is incorrect or clinically unsafe. It looks at 20 inputs one at a time, so
+unusual *combinations* of individually typical values are not detected. Its thresholds flag about 5% of training hours
+by construction. A data fault (e.g. a °F temperature) can also raise it, which is why the panel says "check input trust
+first" when both are raised.
+
+| LOW | MODERATE (age below training range) | HIGH (scenario D) |
+|---|---|---|
+| ![](results/screenshots/07_shift_low.png) | ![](results/screenshots/08_shift_moderate.png) | ![](results/screenshots/09_shift_high.png) |
 
 ---
+
+# Technical detail
 
 ## Results
 
@@ -162,7 +324,7 @@ results. The validation-cohort replication below checks that this did not inflat
 | Check | Severity | Catches |
 |---|---|---|
 | Physiological plausibility | LOW | unit errors, sensor faults (Temp 98 "°C", Creatinine 88 "mg/dL") |
-| BP consistency (DBP ≥ SBP, MAP > SBP) | LOW | impossible combinations |
+| BP consistency (DBP ≥ SBP, MAP > SBP) | LOW | inconsistent combinations |
 | Coordinated normalising shift: summed, clipped z-score of HR/Resp/Temp falling and SBP/MAP rising vs the patient's own baseline; threshold at a 0.25% clean false-flag budget | LOW | overwritten or manipulated charts |
 | Abrupt jump > 99.95th percentile of clean hourly changes | REDUCED | spikes (could be real deterioration, so never a veto) |
 | Frozen feed (core vitals identical ≥ 8 h) | REDUCED | stalled interfaces, copied-forward values |
@@ -178,9 +340,9 @@ results. The validation-cohort replication below checks that this did not inflat
 | REDUCED | prediction shown with "verify inputs" |
 | LOW | **prediction withheld: "requires data verification"** (research score kept for audit only) |
 
-**Model confidence ≠ input trust.** The five models can agree perfectly about corrupted inputs, as in the screenshot
-above. The dashboard shows the two signals side by side, and `tests/test_integrity_and_metrics.py` checks that input
-trust is computed from the inputs alone.
+**Model confidence ≠ input trust.** The five models can agree perfectly about corrupted inputs, as in Judge Demo scenarios B and C. The dashboard shows the two signals side by side, and `tests/test_integrity_and_metrics.py` checks that the
+input-integrity flags are computed from the inputs alone, and that corrupting an input lowers trust even when the models
+agree perfectly.
 
 ### Does the shield do anything? Integrity ablation under six input failures
 
@@ -209,11 +371,11 @@ normal-looking prediction.** With it:
 | Monitor artifact | 1,255 | 951 | 304 | 0 | **100%** |
 | Frozen feed | 509 | 6 | 232 | 271 | **46.8%** |
 | **All accidental faults** | **6,790** | **2,766** | **3,715** | **309** | **95.4%** |
-| **Deliberately edited inputs** | **786** | 66 | 268 | 452 | **42.5%** |
+| **Deliberately edited inputs** | **786** | 66 | 268 | 452 | **42.5%** (26.5% if edits stay plausible) |
 | Ordinary noise (control) | 87 | 2 | 9 | 76 | 12.6% |
 
 **Read these numbers with their scope.** The 95.4% applies to the four *accidental* fault types we simulated. It does not
-apply to deliberate edits (42.5%) or to failure types we did not simulate.
+apply to deliberate edits (42.5%; 26.5% when the edits stay physiologically plausible) or to failure types we did not simulate.
 
 * **By direction (accidental faults):** spurious alerts 98.3% (6,210 / 6,317); suppressed alerts 57.3% (271 / 473), limited
   mainly by frozen feeds, which by definition can only be recognised after 8 identical hours.
@@ -221,30 +383,36 @@ apply to deliberate edits (42.5%) or to failure types we did not simulate.
   coverage is 89.4% for accidental faults and 34.5% for deliberate edits.
 * **Validation-cohort replication:** the integrity layer's *thresholds* were always fitted on training patients, but its
   *design* (severity tiers, the coordinated-shift detector) was revised after inspecting benchmark results on the test
-  cohort. To check that this did not inflate the results, the full benchmark was re-run on the 4,034 validation patients,
-  which played no part in any integrity design decision: accidental faults **94.7%** (3,313 / 3,498), deliberate edits
-  **48.0%** (212 / 442), clean predictions withheld 0.48%.
+  cohort. To check that this did not inflate the results, the full benchmark was re-run on validation patients, who
+  played no part in any integrity design decision (1,543 patients: all septic plus 1,250 random non-septic, mirroring
+  the test benchmark's sampling): accidental faults **94.7%** (3,313 / 3,498), deliberate edits **48.0%** (212 / 442).
+  Clean predictions withheld across all 4,034 validation patients: 0.48%.
 * **Patient level:** every septic patient whose alert an accidental fault suppressed received at least one trust warning
   (42 / 42), as did every non-septic patient given a new false alarm (773 / 773).
 
 **Cost on clean data** (all 8,068 held-out test patients, no corruption):
 * **0.46% of patient-hours withheld** (1,438 / 309,270) and 4.7% flagged.
 * 12% of patients have at least one withheld hour, typically a single hour (median 1).
-* Of the clean withholds, 48% are triggered by values that are genuinely impossible in the original records (withholding
+* Of the clean withholds, 48% are triggered by values that are physiologically implausible in the original records (withholding
   is correct there), and 52% by the coordinated-shift detector firing on real patients (likely false flags, e.g. rapid
   improvement after treatment).
 * Of 4,846 correct sepsis-alert hours, 38 (0.8%) were withheld; 464 of the 465 detected sepsis patients still received at
   least one shown alert.
 
-**Found in the real data:** 2,548 physiologically impossible hours in the *original* PhysioNet files (e.g. FiO₂ 4000,
-respiratory rate 1) and 9,884 calcium values clustered at 1.18, consistent with ionised calcium (mmol/L) entered into a
+**Flagged in the original data:** 2,548 patient-hours with physiologically implausible values in the *original*
+PhysioNet files (e.g. FiO₂ 4000, respiratory rate 1) and 9,884 calcium values clustered at 1.0–1.9 (median 1.17),
+consistent with a possible unit mismatch (ionised calcium in mmol/L entered into a
 total-calcium (mg/dL) field.
 
 ### Principal limitation: deliberate manipulation
 
 Detection was substantially weaker for deliberately edited inputs: 42.5% of alert-changing edits were flagged or withheld
-(334 / 786; 48.0% on the validation cohort). It sees a jump when the edit
-begins; a careful, gradual falsification that stays inside normal physiology is not detectable from vitals alone.
+(334 / 786; 48.0% on the validation cohort). The simulated edit subtracts fixed amounts, which sometimes pushes values
+outside physiology (e.g. respiratory rate below 4), and those implausible values help detection. A sensitivity check
+that keeps the edited vitals inside normal adult ranges (HR ≥ 60, Resp ≥ 12, Temp ≥ 36 °C, SBP ≤ 160, MAP ≤ 110)
+lowers coverage to **26.5% (232 / 876)** (`tools/masking_realism_check.py`, `results/masking_realism.json`). The
+reported 42.5% is therefore an optimistic figure for realistic edits. The layer sees a jump when an edit begins; a
+careful, gradual falsification that stays inside normal physiology is largely undetectable from vitals alone.
 Concrete next steps: (1) **cross-signal consistency**, predicting each vital from the others and from labs and flagging
 residuals (an overwritten heart rate that no longer matches lactate, WBC and respiratory trends); (2) **provenance
 signals** from the EHR audit trail (who changed a value, when, and whether it was device-captured or manually entered),
@@ -307,12 +475,13 @@ A from-scratch rerun reproduced `results/results.json` and `results/integrity_be
 thresholds and calibrators are saved in `models/`.
 
 ```
-app/            Streamlit dashboard (judge mode) + held-out demo patients
+app/            Streamlit dashboard (judge mode), Judge Demo scenarios (scenarios.py), held-out demo patients
+src/shift.py    distribution-shift awareness (reference in models/shift_reference.json, evaluation in results/)
 src/            data → features → training → integrity → experiments → figures
 tests/          leakage, isolation, integrity, utility and pipeline tests (run in CI, plus a browser test of abstention)
 models/         5 LightGBM models, calibrator, thresholds, integrity config
 results/        results JSON, figures, screenshots, logs/
-submission/     Devpost text, video, video script
+submission/     Devpost text, video, video script, gallery; ml_empowerment/ = competition-specific assets
 tools/          screenshot, architecture and video tooling
 ```
 
@@ -321,12 +490,15 @@ tools/          screenshot, architecture and video tooling
 * Retrospective data from two US hospital systems, with no prospective or real-time evaluation.
 * Labels follow the challenge's Sepsis-3 based definition, shifted 6 h early; lead time is measured against that
   definition and capped at 12 h by the evaluation window.
-* External AUROC drops to 0.78–0.79; thresholds and calibration must be re-fitted locally.
+* External (zero-shot) AUROC drops to 0.790 (train A → test B) and 0.775 (train B → test A); thresholds and calibration
+  must be re-fitted locally.
 * The model leans on care-process signals that differ between hospitals.
-* Integrity coverage is high for three of the four accidental fault types, 47% for frozen feeds, and 42.5% for deliberate edits.
+* Integrity coverage is high for three of the four accidental fault types, 47% for frozen feeds, and 42.5% for deliberate edits (26.5% when the simulated edits stay inside normal physiological ranges).
 * The integrity layer's design was informed by test-cohort benchmark results; a validation-cohort replication gives similar
   numbers, but a fully independent benchmark cohort would be cleaner.
 * Corruptions in the benchmark are simulated; real-world failure frequencies are unknown.
+* Distribution-shift awareness indicates that an input pattern differs from the training distribution; it does not
+  establish that a prediction is incorrect or clinically unsafe.
 * A research prototype, not a medical device, and not validated for any clinical decision.
 
 ## References
@@ -346,6 +518,15 @@ tools/          screenshot, architecture and video tooling
 13. Seymour CW, Liu VX, Iwashyna TJ, et al. Assessment of Clinical Criteria for Sepsis (qSOFA). *JAMA* 315(8):762–774 (2016).
 14. Kahn MG, Callahan TJ, Barnard J, et al. A Harmonized Data Quality Assessment Terminology and Framework for the Secondary Use of Electronic Health Record Data. *eGEMs* 4(1):1244 (2016). doi:10.13063/2327-9214.1244
 15. Geifman Y, El-Yaniv R. Selective Classification for Deep Neural Networks. *NeurIPS* (2017).
+
+## Research and safety disclaimer
+
+**Research prototype only. Not a medical device and not intended for clinical decision-making.**
+
+SepsisShield is a research prototype built on retrospective, de-identified data from two US hospital systems. It is
+not a medical device, has not been prospectively or clinically validated, and must not be used for patient care. The
+trust layer reduces some failure modes in a simulated benchmark; it does not detect all bad data and does not prevent
+all wrong predictions.
 
 ## Licence
 
