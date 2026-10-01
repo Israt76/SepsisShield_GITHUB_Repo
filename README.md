@@ -26,9 +26,9 @@ Challenge dataset: vital signs, laboratory measurements and other patient variab
 ## Live demo
 
 **[https://sepsisshieldapprepo-diqdknfnksrq5yyf6wkcrd.streamlit.app/](https://sepsisshieldapprepo-diqdknfnksrq5yyf6wkcrd.streamlit.app/)** (Streamlit Community Cloud; first load after inactivity can take ~30 s while the app wakes). The page
-opens directly on Judge Demo scenario A.
+opens directly on Interactive Demo scenario A.
 
-![Judge Demo Mode: edited chart, model confident, input trust LOW, prediction withheld](results/screenshots/02_prediction_withheld.png)
+![Interactive Demo Scenarios: edited chart, model confident, input trust LOW, prediction withheld](results/screenshots/02_prediction_withheld.png)
 
 ## Core architecture
 
@@ -77,7 +77,7 @@ A conceptual comparison of system designs, not a claim about any specific commer
 | Explains *why* it reacted | – | – | ✓ names the check that fired |
 
 **Why model confidence is not enough.** Ensemble agreement measures how consistent the model is with itself. It
-does not show that the clinical data are correct. In Judge Demo scenarios B and C below, all five models agree
+does not show that the clinical data are correct. In interactive demo scenarios B and C below, all five models agree
 (*Confident*) while the inputs are wrong. SepsisShield therefore treats model confidence and input trust as separate
 signals.
 
@@ -108,7 +108,7 @@ is shown with a warning or withheld → the user is asked to verify the named me
 Details, confidence intervals, baselines and definitions are in [Results](#results) and
 [The trust path](#the-trust-path--what-is-new).
 
-## Judge Demo Mode
+## Interactive Demo Scenarios
 
 Three buttons at the top of the dashboard each load a real held-out test patient, scored live by the shipped models.
 The four cards (**Sepsis risk · Model confidence · Input trust · Final decision**) update immediately. Below the cards,
@@ -144,14 +144,14 @@ limitations), and later hours of C's window also contain physiologically implaus
 ```bash
 git clone https://github.com/Israt76/SepsisShield_GITHUB_Repo.git && cd SepsisShield_GITHUB_Repo
 pip install -r requirements.txt          # exact pinned versions, Python 3.11
-streamlit run app/app.py                 # opens on Judge Demo scenario A
+streamlit run app/app.py                 # opens on Interactive Demo scenario A
 ```
 
-No raw dataset download or retraining is required for judge mode: the five trained models, calibrator, integrity
+No raw dataset download or retraining is required for interactive demo mode: the five trained models, calibrator, integrity
 thresholds, result files and 52 held-out demo patients ship with the repository. No API keys or credentials are needed.
 
 ```bash
-python -m pytest -q tests                # 62 tests (1 needs the raw data and is skipped in judge mode)
+python -m pytest -q tests                # 62 tests (1 needs the raw data and is skipped in interactive demo mode)
 ```
 
 Full reproduction from raw data is [below](#reproduce-everything-from-raw-data).
@@ -340,7 +340,7 @@ results. The validation-cohort replication below checks that this did not inflat
 | REDUCED | prediction shown with "verify inputs" |
 | LOW | **prediction withheld: "requires data verification"** (research score kept for audit only) |
 
-**Model confidence ≠ input trust.** The five models can agree perfectly about corrupted inputs, as in Judge Demo scenarios B and C. The dashboard shows the two signals side by side, and `tests/test_integrity_and_metrics.py` checks that the
+**Model confidence ≠ input trust.** The five models can agree perfectly about corrupted inputs, as in interactive demo scenarios B and C. The dashboard shows the two signals side by side, and `tests/test_integrity_and_metrics.py` checks that the
 input-integrity flags are computed from the inputs alone, and that corrupting an input lowers trust even when the models
 agree perfectly.
 
@@ -475,7 +475,7 @@ A from-scratch rerun reproduced `results/results.json` and `results/integrity_be
 thresholds and calibrators are saved in `models/`.
 
 ```
-app/            Streamlit dashboard (judge mode), Judge Demo scenarios (scenarios.py), held-out demo patients
+app/            Streamlit dashboard (interactive demo mode), interactive demo scenarios (scenarios.py), held-out demo patients
 src/shift.py    distribution-shift awareness (reference in models/shift_reference.json, evaluation in results/)
 src/            data → features → training → integrity → experiments → figures
 tests/          leakage, isolation, integrity, utility and pipeline tests (run in CI, plus a browser test of abstention)
